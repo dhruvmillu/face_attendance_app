@@ -34,7 +34,7 @@
         font-size: 12px;
         
     }
-    .submit-btn{
+    .btnHolder{
         
     position: relative;
     left:50%;
@@ -48,7 +48,17 @@
     <form action="" method="post">
         {{ form.as_p }}
         {% csrf_token %}
+        <div class="btnHolder">
         <input type="submit" value="Register" class="submit-btn text-[50px]" />
+        <button class="submit-btn text-[50px]" id="btn">Login</button>
+        </div>
     </form>
     </div>
+    <script>
+        btn = document.getElementById('btn');
+        btn.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            window.location.href = "{% url 'login' %}";
+        })
+    </script>
 {% endblock %}

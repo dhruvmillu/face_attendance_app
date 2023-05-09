@@ -28,10 +28,12 @@ nav{
 .box:nth-of-type(2){
     
     background: radial-gradient(circle at 90% 40px, #ffd975, #f8b500);
-
+    display:flex;
+    flex-direction:column;
     margin:20px;
     padding:20px;
     border-radius: 20px;
+    align-items:center;
 
 }
 
@@ -46,6 +48,34 @@ nav{
     position: relative;
     left: 50%;
     transform: translate(-50%, -0%);
+}
+
+table, th, td {
+    border: 3px solid black;
+    border-collapse: collapse;
+    font-size:25px;
+    font-family:"Architects Daughter";
+
+  }
+
+td,th {
+    padding: 20px 10px;
+}
+
+.data{
+    font-size:30px;
+    font-family:"Architects Daughter";
+    font-weight: bold;
+}
+
+.att{
+    display:grid;
+    grid-template-columns: repeat(2,1fr);
+    grid-gap: 20px;
+}
+
+.something{
+    height: fit-content;
 }
 
 {% endblock style %}
@@ -80,14 +110,38 @@ nav{
             
         </div>
         <div class="mx-auto py-6 px-10 grid grid-cols-2">
-        <div class="box">
-            <h2 class="text-[35px] ml-[50px]">Profile</h2>
-            <img src="/media/{{profile.photo}}" alt="" class="w-[200px] h-[200px] rounded-full mt-[30px]">
-            <p class="text-[30px] ml-[50px]">BIO:</p>
-            <p class="text-[25px] ml-[50px]">{{profile.bio}}</p>
+        <div class="box h-fit">
+            <h2 class="text-[45px] ml-[50px]">Profile</h2>
+            <img src="/media/{{profile.photo}}" alt="" class="w-[200px] h-[200px] rounded-full my-[30px]">
+            <p class="text-[30px] ml-[50px] data">Name : {{user.first_name}} {{user.last_name}}</p>
+            <p class="text-[30px] ml-[50px] data">Email : {{user.email}}</p>
+            <p class="text-[30px] ml-[50px] data">Roll No : {{user.username}}</p>
+            
+            {% if profile.bio %}
+            <p class="text-[30px] ml-[50px] mt-[20px] data">BIO:</p>
+            <p class="text-[25px] ml-[50px] data">{{profile.bio}}</p>
+            {% endif %}
         </div>
-        <div class="box">
-            <h2 class="text-[35px] ml-[50px]">Attendance</h2>
+        <div class="box something">
+            <h2 class="text-[45px] ">Attendance</h2>
+            <div class="att">
+            {% if attendance %}
+                {% for key, values in attendance.items %}
+                    <table class="mb-[20px]">
+                        <tr>
+                            <th colspan="3">Date : {{key}}</th>
+                        </tr>
+                        {% for value in values  %}
+                        <tr>
+                            <td>PERIOD {{forloop.counter}}</td>
+                            <td>{{value.0}}</td>
+                            <td>{{value.1}}</td>
+                            
+                        </tr>
+                        {% endfor %}
+                {% endfor %}
+            {% endif %}
+                    </div>
         </div>
     </div>
     </div>

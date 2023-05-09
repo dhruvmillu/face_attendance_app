@@ -26,7 +26,7 @@
         font-size:25px;
         margin-top: 20px;
     }
-    .submit-btn{
+    .btnHolder{
         
         position: relative;
         left:50%;
@@ -35,6 +35,10 @@
 
 {% endblock style %}
 
+{% block script %}
+
+{% endblock script %}
+
 {% block content %}
     <div class="flex justify-center items-center w-screen h-screen">
         <div class="w-1/2 max-w-[500px]">
@@ -42,8 +46,18 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+    <div class="btnHolder">
     <button type="submit" class="submit-btn text-[30px] px-[30px] py-[10px] rounded-[10px] duration-200">Login</button>
+    <button onclick="evtHandler()"  id ="btn" class="submit-btn text-[30px] px-[30px] py-[10px] rounded-[10px] duration-200">Register</button>
+    <div>
   </form>
   </div>
 </div>
+<script>
+    btn = document.getElementById('btn');
+    btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        window.location.href = "{% url 'register' %}";
+    })
+</script>
 {% endblock %}

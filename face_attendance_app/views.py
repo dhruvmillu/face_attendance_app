@@ -64,7 +64,8 @@ def findUser(request):
             user_dict = {'username':user.username,'first_name':user.first_name,'last_name':user.last_name,'email':user.email,'id':user_id,'pid':images[index][2]}
             lg = Log.objects.filter(profile_id=images[index][2],created_at__gte=dtl)
             print("log",lg,len(lg), dt > dtl)
-            att = True if len(lg) == 0 else False
+            att = len(lg) == 0 
+            print("attendance",att)
             print("found user", user_dict)
             return JsonResponse({'success': True,'user':user_dict,'attendance':att})
     else:
@@ -103,7 +104,16 @@ def attendance(request):
 @login_required
 def dashboard(request):
     profile = get_object_or_404(Profile, user=request.user)
-    return render(request, 'dashboard.html',{'user':request.user,'profile':profile})
+    logs = Log.objects.filter(profile=profile)
+    data = {}
+    for log in logs:
+        dt = datetime.fromtimestamp(log.created_at.timestamp())
+        date = str(dt.date())
+        if date not in data:
+            data[date] = []
+        data[date].append([str(dt.time())[:-7],"Present"])
+    print(data)
+    return render(request, 'dashboard.html',{'user':request.user,'profile':profile,'attendance':data})
 
 def register(request):
     if request.method == 'POST':

@@ -64,7 +64,7 @@
                 'X-CSRFToken': csrftoken
             },
             success: function(data) {
-                console.log(data);
+                (data);
                 const name = document.createElement("p");
                 var node = document.createTextNode(data.user.first_name+" "+data.user.last_name);
                 var filler = document.createElement("span")
@@ -95,7 +95,7 @@
                 document.getElementById("id_is_correct").value = true;
                 document.getElementById("id_pid").value = data.user.pid;
                 var btn = document.getElementById("submit"); 
-                if (data.att){
+                if (data.attendance){
                     btn.disabled = false;
                     btn.innerHTML = "Submit"
                 }
@@ -168,7 +168,7 @@
             context.drawImage(video, 0, 0, width, height);
 
             var data = canvas.toDataURL('image/png');
-            console.log(data)
+            (data)
             photo.value = data;
             executeFunction(data)
         } else {
