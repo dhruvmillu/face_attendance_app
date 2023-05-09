@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block style %}
+
+nav{
+    position: sticky;
+    top:0;
+    z-index: 10000;
+}
+.box{
+
+    margin:20px;
+    padding:20px;
+    border-radius: 20px;
+
+}
+
+.box:nth-of-type(1){
+    
+    background: radial-gradient(circle at 40px 40px,#00f1f3 ,#0ED2F7 ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    margin:20px;
+    padding:20px;
+    border-radius: 20px;
+
+}
+
+.box:nth-of-type(2){
+    
+    background: radial-gradient(circle at 90% 40px, #ffd975, #f8b500);
+
+    margin:20px;
+    padding:20px;
+    border-radius: 20px;
+
+}
+
+.box img{
+    border-radius: 50%;
+    border: 5px solid #fff;
+    box-shadow: 0 0 0 5px #000;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    object-position: center;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, -0%);
+}
+
+{% endblock style %}
+
+{% block content %}
+{% load static %}
+    <div class="w-screen">
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-[30px] font-semibold">
+            <div class="flex justify-between w-full p-5">
+                <div class="flex item-center justify-between w-full">
+                    
+                    <a href="#" class="flex-shrink-0 flex items-center justify-center">
+                        <img class="h-8 w-8" src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow">
+                        <span class="ml-2 font-semibold">{{user}}</span>
+                    </a>
+                      <div class="flex-shrink-0 flex items-center justify-center">
+                        <a href="{% url 'edit_profile' %}" class="flex-shrink-0 flex  hover:text-gray-700 px-3 py-2 rounded-md">Edit Profile</a>
+                        <form action="{% url 'logout' %}" method="POST" class="ml-3">
+                            {% csrf_token %}
+                            <button type="submit" class=" hover:text-gray-700 px-3 py-2 rounded-md">Logout</button>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </nav>
+    <div class="mx-auto py-6 px-10">
+        <div class="px-4 py-6 sm:px-0">
+            <h2 class="text-[50px]">Welcome {{user.first_name}}, to your Dashboard</h2>
+            
+        </div>
+        <div class="mx-auto py-6 px-10 grid grid-cols-2">
+        <div class="box">
+            <h2 class="text-[35px] ml-[50px]">Profile</h2>
+            <img src="/media/{{profile.photo}}" alt="" class="w-[200px] h-[200px] rounded-full mt-[30px]">
+            <p class="text-[30px] ml-[50px]">BIO:</p>
+            <p class="text-[25px] ml-[50px]">{{profile.bio}}</p>
+        </div>
+        <div class="box">
+            <h2 class="text-[35px] ml-[50px]">Attendance</h2>
+        </div>
+    </div>
+    </div>
+    </div>
+    {% endblock content %}

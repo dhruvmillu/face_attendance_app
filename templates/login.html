@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block style %}
+
+    input[type=text], input[type=password] {
+        background: transparent;
+        font-size:20px;
+        border-bottom: 2px solid black;
+        width: 100%;
+        padding: 12px 20px 0px 20px;
+        display: inline-block;
+        box-sizing: border-box;
+        letter-spacing: 2px;
+        transition: 0.5s;
+        font-family: "Architects Daughter";
+    }
+    input[type=text]:focus, input[type=password]:focus {
+        font-size:30px;
+        border:none;
+        outline:none;
+        letter-spacing: 0px;
+        border-bottom: 2px solid #fc5858;
+    }
+
+    p{
+        font-size:25px;
+        margin-top: 20px;
+    }
+    .submit-btn{
+        
+        position: relative;
+        left:50%;
+        transform: translateX(-50%);
+        }
+
+{% endblock style %}
+
+{% block content %}
+    <div class="flex justify-center items-center w-screen h-screen">
+        <div class="w-1/2 max-w-[500px]">
+  <h2 class="text-[40px] ">Login</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="submit-btn text-[30px] px-[30px] py-[10px] rounded-[10px] duration-200">Login</button>
+  </form>
+  </div>
+</div>
+{% endblock %}

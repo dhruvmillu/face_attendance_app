@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+{% block style %}
+
+
+    .visibility{
+        display: none;
+    }
+
+    label{
+        display: block;
+        font-size: 30px;
+        margin-top:10px;
+    }
+
+    #info{
+        font-size: 34px;
+        font-family: 'Architects Daughter';
+        display: grid;
+        justify-content: center;
+
+    }
+    .holder {
+        margin-right: 33px;
+    }
+
+{% endblock style %}
+
+{% block content %}
+<div class="p-10">
+  <h2 class="text-[60px] mb-[10px]">Enter Some extra data</h2>
+  <form method="post" enctype="multipart/form-data" class="form-group flex flex-col">
+    {% csrf_token %}
+    <div class="form-group flex flex-col" id = "id_form">
+        <div class="flex justify-self-center self-center">
+        <video id="video" class="p-5 w-[500px]"></video>
+        <canvas id="canvas" class="p-5 w-[500px] visibility"></canvas>
+        </div>
+        <button id="capture" class="submit-btn text-[30px] px-[30px] py-[10px] rounded-[10px] duration-200">Take Photo</button>
+        {{ form }}
+        <div id = "info">
+        </div>
+        <button type="submit" id="submit" class="submit-btn text-[30px] px-[30px] py-[10px] rounded-[10px] duration-200">Submit</button>
+    </div>
+    
+</form>
+</div>
+
+<script>
+    var streaming = false;
+    var video = null;
+    var photo_input = null;
+    var isON = false;
+
+    function executeFunction(data) {
+        var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+        $.ajax({
+            url: '{% url "findUser" %}',
+            method: 'POST',
+            data: {
+                'key': data,
+                'key2': 'value2'
+            },
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            success: function(data) {
+                console.log(data);
+                const name = document.createElement("p");
+                var node = document.createTextNode(data.user.first_name+" "+data.user.last_name);
+                var filler = document.createElement("span")
+                filler.classList.add("holder");
+                filler.appendChild(document.createTextNode("Name :"))
+                name.appendChild(filler)
+                name.appendChild(node);
+                const email = document.createElement("p");
+                node = document.createTextNode(data.user.email);
+                filler = document.createElement("span")
+                filler.classList.add("holder");
+                filler.appendChild(document.createTextNode("Email :"))
+                email.appendChild(filler)
+                email.appendChild(node);
+                const username = document.createElement("p");
+                node = document.createTextNode(data.user.username);
+                filler = document.createElement("span")
+                filler.classList.add("holder");
+                filler.appendChild(document.createTextNode("Username :"))
+                username.appendChild(filler)
+                username.appendChild(node);
+                const info = document.getElementById("info")
+                info.innerHTML = "";
+                info.appendChild(name);
+                info.appendChild(email);
+                info.appendChild(username);
+                document.getElementById("id_profile").value = data.user.id;
+                document.getElementById("id_is_correct").value = true;
+                document.getElementById("id_pid").value = data.user.pid;
+                var btn = document.getElementById("submit"); 
+                if (data.att){
+                    btn.disabled = false;
+                    btn.innerHTML = "Submit"
+                }
+                else{
+                    btn.disabled = true;
+                    btn.innerHTML = "Attendance Already Recorded"
+                }
+                
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function startup() {
+        video = document.getElementById('video');
+        canvas = document.getElementById('canvas');
+        photo = document.getElementById('id_image');
+        form = document.getElementById('id_form');
+        photo.style.display = "none";
+        const captureButton = document.getElementById('capture');
+
+
+        captureButton.addEventListener('click', (ev) => {
+            ev.preventDefault()
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.classList.remove('visibility');
+            
+
+          });
+
+        navigator.mediaDevices.getUserMedia({video: true, audio: false})
+        .then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch(function(err) {
+            console.log("An error occurred: " + err);
+        });
+
+        video.addEventListener('canplay', function(ev){
+            if (!streaming) {
+                height = video.videoHeight / (video.videoWidth/width);
+
+                if (isNaN(height)) {
+                    height = width / (4/3);
+                }
+
+                video.setAttribute('width', width);
+                video.setAttribute('height', height);
+                canvas.setAttribute('width', width);
+                canvas.setAttribute('height', height);
+                streaming = true;
+            }
+        }, false);
+
+        document.getElementById('capture').addEventListener('click', function(ev){
+            takepicture();
+            ev.preventDefault();
+        }, false);
+    }
+
+    function takepicture() {
+        var context = canvas.getContext('2d');
+        if (width && height) {
+            canvas.width = width;
+            canvas.height = height;
+            context.drawImage(video, 0, 0, width, height);
+
+            var data = canvas.toDataURL('image/png');
+            console.log(data)
+            photo.value = data;
+            executeFunction(data)
+        } else {
+            clearphoto();
+        }
+    }
+
+
+</script>
+<script>
+    var width = 320;
+    var height = 0;
+    window.addEventListener('load', startup, false);
+</script>
+<script>
+
+   
+
+</script>
+
+{% endblock %}

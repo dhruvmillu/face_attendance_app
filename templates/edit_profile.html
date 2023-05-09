@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block style %}
+
+    #id_bio{
+        background-color: transparent;
+        border:4px solid #000000;
+        outline:none;
+        padding:10px;
+        border-radius:10px;
+        width:100%;
+        font-size:15px;
+        font-family: "Architects Daughter";
+
+    }
+    #id_bio::focused{
+        background-color: transparent;
+        border:none;
+        outline:none
+    }
+
+    .visibility{
+        display: none;
+    }
+
+    label{
+        display: block;
+        font-size: 30px;
+        margin-top:10px;
+    }
+
+{% endblock style %}
+
+{% block content %}
+<div class="p-10">
+  <h2 class="text-[60px] mb-[10px]">Enter Some extra data</h2>
+  <form method="post" enctype="multipart/form-data" class="form-group flex flex-col">
+    {% csrf_token %}
+    <div class="form-group flex flex-col">
+        <label for="{{ form.photo.id_for_label }}" >Profile Photo:</label>
+        <div class="flex justify-self-center self-center">
+        <video id="video" class="p-5 w-[500px]"></video>
+        <canvas id="canvas" class="p-5 w-[500px] visibility"></canvas>
+        </div>
+        <button id="capture" class="submit-btn text-[30px] px-[30px] py-[10px] rounded-[10px] duration-200">Take Photo</button>
+        {{ form.photo }}
+    </div>
+    <div >
+        <label for="{{ form.bio.id_for_label }}">Bio:</label>
+        <div class="flex ">
+        {{ form.bio }}
+        <button type="submit" class="submit-btn text-[30px] px-[30px] py-[10px] rounded-[10px] duration-200">Submit</button>
+        </div>
+    </div>
+    
+</form>
+</div>
+
+<script>
+    var streaming = false;
+    var video = null;
+    var photo_input = null;
+    var isON = false;
+
+    function startup() {
+        video = document.getElementById('video');
+        canvas = document.getElementById('canvas');
+        photo = document.getElementById('id_photo');
+        photo.style.display = "none";
+        const captureButton = document.getElementById('capture');
+
+        captureButton.addEventListener('click', (ev) => {
+            ev.preventDefault()
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            canvas.classList.remove('visibility');
+          });
+
+        navigator.mediaDevices.getUserMedia({video: true, audio: false})
+        .then(function(stream) {
+            video.srcObject = stream;
+            video.play();
+        })
+        .catch(function(err) {
+            console.log("An error occurred: " + err);
+        });
+
+        video.addEventListener('canplay', function(ev){
+            if (!streaming) {
+                height = video.videoHeight / (video.videoWidth/width);
+
+                if (isNaN(height)) {
+                    height = width / (4/3);
+                }
+
+                video.setAttribute('width', width);
+                video.setAttribute('height', height);
+                canvas.setAttribute('width', width);
+                canvas.setAttribute('height', height);
+                streaming = true;
+            }
+        }, false);
+
+        document.getElementById('capture').addEventListener('click', function(ev){
+            takepicture();
+            ev.preventDefault();
+        }, false);
+    }
+
+    function takepicture() {
+        var context = canvas.getContext('2d');
+        if (width && height) {
+            canvas.width = width;
+            canvas.height = height;
+            context.drawImage(video, 0, 0, width, height);
+
+            var data = canvas.toDataURL('image/png');
+            console.log(data)
+            photo.value = data;
+        } else {
+            clearphoto();
+        }
+    }
+
+
+</script>
+<script>
+    var width = 320;
+    var height = 0;
+    window.addEventListener('load', startup, false);
+</script>
+
+{% endblock %}
