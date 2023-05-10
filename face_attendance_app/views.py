@@ -53,7 +53,7 @@ def findUser(request):
         path = os.path.join(settings.MEDIA_ROOT,image[0])
         print(path)
         encodings.append(face_recognition.face_encodings(face_recognition.load_image_file(path))[0])
-    matches = face_recognition.compare_faces(encodings, face_encodings,tolerance=0.7)
+    matches = face_recognition.compare_faces(encodings, face_encodings,tolerance=0.3)
     print(matches)
     if True in matches:
             index = matches.index(True)
